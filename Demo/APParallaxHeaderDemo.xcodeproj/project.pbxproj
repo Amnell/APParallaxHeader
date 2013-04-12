@@ -18,7 +18,8 @@
 		C72B5335171834E60093E24F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C72B5334171834E60093E24F /* Default-568h@2x.png */; };
 		C72B5338171834E60093E24F /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C72B5336171834E60093E24F /* MainStoryboard.storyboard */; };
 		C72B533B171834E60093E24F /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72B533A171834E60093E24F /* MasterViewController.m */; };
-		C72B533E171834E60093E24F /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72B533D171834E60093E24F /* DetailViewController.m */; };
+		C7E3C5FF17183E4500489EE2 /* ParallaxImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C7E3C5FE17183E4500489EE2 /* ParallaxImage.jpg */; };
+		C7E3C605171842CA00489EE2 /* UIScrollView+APParallaxHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E3C604171842CA00489EE2 /* UIScrollView+APParallaxHeader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,8 +39,9 @@
 		C72B5337171834E60093E24F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		C72B5339171834E60093E24F /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
 		C72B533A171834E60093E24F /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
-		C72B533C171834E60093E24F /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
-		C72B533D171834E60093E24F /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		C7E3C5FE17183E4500489EE2 /* ParallaxImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ParallaxImage.jpg; sourceTree = "<group>"; };
+		C7E3C603171842CA00489EE2 /* UIScrollView+APParallaxHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+APParallaxHeader.h"; sourceTree = "<group>"; };
+		C7E3C604171842CA00489EE2 /* UIScrollView+APParallaxHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+APParallaxHeader.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 		C72B5312171834E60093E24F = {
 			isa = PBXGroup;
 			children = (
+				C7E3C602171842CA00489EE2 /* APParallaxHeader */,
 				C72B5324171834E60093E24F /* APParallaxHeaderDemo */,
 				C72B531D171834E60093E24F /* Frameworks */,
 				C72B531C171834E60093E24F /* Products */,
@@ -91,8 +94,6 @@
 				C72B5336171834E60093E24F /* MainStoryboard.storyboard */,
 				C72B5339171834E60093E24F /* MasterViewController.h */,
 				C72B533A171834E60093E24F /* MasterViewController.m */,
-				C72B533C171834E60093E24F /* DetailViewController.h */,
-				C72B533D171834E60093E24F /* DetailViewController.m */,
 				C72B5325171834E60093E24F /* Supporting Files */,
 			);
 			path = APParallaxHeaderDemo;
@@ -101,6 +102,7 @@
 		C72B5325171834E60093E24F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C7E3C5FE17183E4500489EE2 /* ParallaxImage.jpg */,
 				C72B5326171834E60093E24F /* APParallaxHeaderDemo-Info.plist */,
 				C72B5327171834E60093E24F /* InfoPlist.strings */,
 				C72B532A171834E60093E24F /* main.m */,
@@ -110,6 +112,16 @@
 				C72B5334171834E60093E24F /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C7E3C602171842CA00489EE2 /* APParallaxHeader */ = {
+			isa = PBXGroup;
+			children = (
+				C7E3C603171842CA00489EE2 /* UIScrollView+APParallaxHeader.h */,
+				C7E3C604171842CA00489EE2 /* UIScrollView+APParallaxHeader.m */,
+			);
+			name = APParallaxHeader;
+			path = ../APParallaxHeader;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -168,6 +180,7 @@
 				C72B5333171834E60093E24F /* Default@2x.png in Resources */,
 				C72B5335171834E60093E24F /* Default-568h@2x.png in Resources */,
 				C72B5338171834E60093E24F /* MainStoryboard.storyboard in Resources */,
+				C7E3C5FF17183E4500489EE2 /* ParallaxImage.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,7 +194,7 @@
 				C72B532B171834E60093E24F /* main.m in Sources */,
 				C72B532F171834E60093E24F /* AppDelegate.m in Sources */,
 				C72B533B171834E60093E24F /* MasterViewController.m in Sources */,
-				C72B533E171834E60093E24F /* DetailViewController.m in Sources */,
+				C7E3C605171842CA00489EE2 /* UIScrollView+APParallaxHeader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +282,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "APParallaxHeaderDemo/APParallaxHeaderDemo-Prefix.pch";
 				INFOPLIST_FILE = "APParallaxHeaderDemo/APParallaxHeaderDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -280,6 +294,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "APParallaxHeaderDemo/APParallaxHeaderDemo-Prefix.pch";
 				INFOPLIST_FILE = "APParallaxHeaderDemo/APParallaxHeaderDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -304,6 +319,7 @@
 				C72B5343171834E60093E24F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
