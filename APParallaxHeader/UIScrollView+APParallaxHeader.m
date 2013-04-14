@@ -7,6 +7,8 @@
 
 #import "UIScrollView+APParallaxHeader.h"
 
+#import <QuartzCore/QuartzCore.h>
+
 @interface APParallaxView ()
 
 @property (nonatomic, readwrite) APParallaxTrackingState state;
@@ -86,6 +88,29 @@ static char UIScrollViewParallaxView;
 
 @end
 
+#pragma mark - ShadowLayer
+
+@interface ShadowView : UIView
+
+@end
+
+@implementation ShadowView
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setOpaque:NO];
+    }
+    return self;
+}
+
+- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx
+{
+    [super drawLayer:layer inContext:ctx];
+}
+
+@end
+
 #pragma mark - APParallaxView
 
 @implementation APParallaxView
@@ -103,6 +128,10 @@ static char UIScrollViewParallaxView;
         [self.imageView setContentMode:UIViewContentModeScaleAspectFill];
         [self.imageView setClipsToBounds:YES];
         [self addSubview:self.imageView];
+        
+        self.shadowView = [[ShadowView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(frame)-8, CGRectGetWidth(frame), 8)];
+        [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
+        [self addSubview:self.shadowView];
     }
     
     return self;
