@@ -38,6 +38,19 @@ _**Important note if your project doesn't use ARC**: you must add the `-fobjc-ar
 ## ToDo
 
 * Ability to set a custom view as a ParallaxView
+* Ability to customize the drop shadow size, opacity, color etc.
+* Setting a minimum height
+* Setting contentMode of the imageView
+
+## Changelog
+
+**0.1.3**
+
+* Added an inner shadow
+
+**0.1.2**
+
+* Initial release
 
 ## Credits
 
