@@ -6,6 +6,12 @@ This category makes it super easy to add a parallax header view to your table vi
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
 ```
 
+
+## Demo
+
+[![Demo](https://raw.github.com/apping/APParallaxHeader/gh-pages/images/MovieScreenshot.png)](http://www.youtube.com/watch?v=7-JMdapWXGU)
+
+
 ## Installation
 
 ### From CocoaPods
