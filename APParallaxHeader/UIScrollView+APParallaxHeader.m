@@ -7,6 +7,8 @@
 
 #import "UIScrollView+APParallaxHeader.h"
 
+#import <QuartzCore/QuartzCore.h>
+
 @interface APParallaxView ()
 
 @property (nonatomic, readwrite) APParallaxTrackingState state;
@@ -86,6 +88,54 @@ static char UIScrollViewParallaxView;
 
 @end
 
+#pragma mark - ShadowLayer
+
+@interface ShadowView : UIView
+
+@end
+
+@implementation ShadowView
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setOpaque:NO];
+    }
+    return self;
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    [super drawRect:rect];
+    
+    //// General Declarations
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    
+    //// Gradient Declarations
+    NSArray* gradient3Colors = [NSArray arrayWithObjects:
+                                (id)[UIColor colorWithWhite:0 alpha:0.3].CGColor,
+                                (id)[UIColor clearColor].CGColor, nil];
+    CGFloat gradient3Locations[] = {0, 1};
+    CGGradientRef gradient3 = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)gradient3Colors, gradient3Locations);
+    
+    //// Rectangle Drawing
+    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(0, 0, CGRectGetWidth(rect), 8)];
+    CGContextSaveGState(context);
+    [rectanglePath addClip];
+    CGContextDrawLinearGradient(context, gradient3, CGPointMake(0, CGRectGetHeight(rect)), CGPointMake(0, 0), 0);
+    CGContextRestoreGState(context);
+    
+    
+    //// Cleanup
+    CGGradientRelease(gradient3);
+    CGColorSpaceRelease(colorSpace);
+
+}
+
+@end
+
 #pragma mark - APParallaxView
 
 @implementation APParallaxView
@@ -103,6 +153,10 @@ static char UIScrollViewParallaxView;
         [self.imageView setContentMode:UIViewContentModeScaleAspectFill];
         [self.imageView setClipsToBounds:YES];
         [self addSubview:self.imageView];
+        
+        self.shadowView = [[ShadowView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(frame)-8, CGRectGetWidth(frame), 8)];
+        [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
+        [self addSubview:self.shadowView];
     }
     
     return self;
