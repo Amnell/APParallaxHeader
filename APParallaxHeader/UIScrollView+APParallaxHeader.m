@@ -104,9 +104,34 @@ static char UIScrollViewParallaxView;
     return self;
 }
 
-- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx
+- (void)drawRect:(CGRect)rect
 {
-    [super drawLayer:layer inContext:ctx];
+    [super drawRect:rect];
+    
+    //// General Declarations
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    
+    //// Gradient Declarations
+    NSArray* gradient3Colors = [NSArray arrayWithObjects:
+                                (id)[UIColor colorWithWhite:0 alpha:0.3].CGColor,
+                                (id)[UIColor clearColor].CGColor, nil];
+    CGFloat gradient3Locations[] = {0, 1};
+    CGGradientRef gradient3 = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)gradient3Colors, gradient3Locations);
+    
+    //// Rectangle Drawing
+    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(0, 0, CGRectGetWidth(rect), 8)];
+    CGContextSaveGState(context);
+    [rectanglePath addClip];
+    CGContextDrawLinearGradient(context, gradient3, CGPointMake(0, CGRectGetHeight(rect)), CGPointMake(0, 0), 0);
+    CGContextRestoreGState(context);
+    
+    
+    //// Cleanup
+    CGGradientRelease(gradient3);
+    CGColorSpaceRelease(colorSpace);
+
 }
 
 @end
