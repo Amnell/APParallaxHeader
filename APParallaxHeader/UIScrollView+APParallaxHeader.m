@@ -52,11 +52,9 @@ static char UIScrollViewParallaxView;
 }
 
 - (void)setParallaxView:(APParallaxView *)parallaxView {
-    [self willChangeValueForKey:@"APParallaxView"];
     objc_setAssociatedObject(self, &UIScrollViewParallaxView,
                              parallaxView,
                              OBJC_ASSOCIATION_ASSIGN);
-    [self didChangeValueForKey:@"APParallaxView"];
 }
 
 - (APParallaxView *)parallaxView {
@@ -164,7 +162,6 @@ static char UIScrollViewParallaxView;
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
     if (self.superview && newSuperview == nil) {
-        //use self.superview, not self.scrollView. Why self.scrollView == nil here?
         UIScrollView *scrollView = (UIScrollView *)self.superview;
         if (scrollView.showsParallax) {
             if (self.isObserving) {
