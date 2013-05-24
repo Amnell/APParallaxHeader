@@ -31,5 +31,6 @@ typedef NSUInteger APParallaxTrackingState;
 @property (nonatomic, readonly) APParallaxTrackingState state;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) ShadowView *shadowView;
+@property (nonatomic) CGFloat maxHeight;
 
 @end
