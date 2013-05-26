@@ -88,11 +88,7 @@ static char UIScrollViewParallaxView;
 
 #pragma mark - ShadowLayer
 
-@interface ShadowView : UIView
-
-@end
-
-@implementation ShadowView
+@implementation APParallaxShadowView
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -152,7 +148,7 @@ static char UIScrollViewParallaxView;
         [self.imageView setClipsToBounds:YES];
         [self addSubview:self.imageView];
         
-        self.shadowView = [[ShadowView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(frame)-8, CGRectGetWidth(frame), 8)];
+        self.shadowView = [[APParallaxShadowView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(frame)-8, CGRectGetWidth(frame), 8)];
         [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
         [self addSubview:self.shadowView];
     }

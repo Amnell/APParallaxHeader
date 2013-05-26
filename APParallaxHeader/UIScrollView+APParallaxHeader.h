@@ -8,7 +8,7 @@
 #import <UIKit/UIKit.h>
 
 @class APParallaxView;
-@class ShadowView;
+@class APParallaxShadowView;
 
 @interface UIScrollView (APParallaxHeader)
 
@@ -30,6 +30,10 @@ typedef NSUInteger APParallaxTrackingState;
 
 @property (nonatomic, readonly) APParallaxTrackingState state;
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) ShadowView *shadowView;
+@property (nonatomic, strong) APParallaxShadowView *shadowView;
+
+@end
+
+@interface APParallaxShadowView : UIView
 
 @end
