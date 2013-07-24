@@ -13,6 +13,7 @@
 @interface UIScrollView (APParallaxHeader)
 
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height;
 
 @property (nonatomic, strong, readonly) APParallaxView *parallaxView;
 @property (nonatomic, assign) BOOL showsParallax;
@@ -30,6 +31,7 @@ typedef NSUInteger APParallaxTrackingState;
 
 @property (nonatomic, readonly) APParallaxTrackingState state;
 @property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIView *currentSubView;
 @property (nonatomic, strong) APParallaxShadowView *shadowView;
 
 @end
