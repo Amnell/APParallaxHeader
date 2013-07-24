@@ -7,16 +7,49 @@
 //
 
 #import "MasterViewController.h"
-
 #import "UIScrollView+APParallaxHeader.h"
+
+@interface MasterViewController ()
+{
+    BOOL parallaxWithView;
+}
+@end
 
 @implementation MasterViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"with view" style:UIBarButtonItemStylePlain target:self action:@selector(toggle:)];
+    [self.navigationItem setRightBarButtonItem:barButton];
 
-    [self.tableView addParallaxWithImage:[UIImage imageNamed:@"ParallaxImage.jpg"] andHeight:160];
+    [self toggle:nil];
+}
+
+- (void)toggle:(id)sender
+{
+    if(parallaxWithView == NO)
+    {
+        // add parallax with view
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Rover.jpg"]];
+        [imageView setFrame:CGRectMake(0, 0, 320, 160)];
+        [imageView setContentMode:UIViewContentModeScaleAspectFill];
+        [self.tableView addParallaxWithView:imageView andHeight:160];
+        parallaxWithView = YES;
+        
+        UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"with image" style:UIBarButtonItemStylePlain target:self action:@selector(toggle:)];
+        [self.navigationItem setRightBarButtonItem:barButton];
+    }
+    else
+    {
+        // add parallax with image
+        [self.tableView addParallaxWithImage:[UIImage imageNamed:@"ParallaxImage.jpg"] andHeight:160];
+        parallaxWithView = NO;
+        
+        UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"with view" style:UIBarButtonItemStylePlain target:self action:@selector(toggle:)];
+        [self.navigationItem setRightBarButtonItem:barButton];
+    }
 }
 
 #pragma mark - Table View
