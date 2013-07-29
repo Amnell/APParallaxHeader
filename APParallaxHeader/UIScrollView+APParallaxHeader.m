@@ -31,9 +31,14 @@ static char UIScrollViewParallaxView;
 @implementation UIScrollView (APParallaxHeader)
 
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height {
-    
-    if(!self.parallaxView) {
+    if(self.parallaxView) {
+        if(self.parallaxView.currentSubView) [self.parallaxView.currentSubView removeFromSuperview];
+        [self.parallaxView.imageView setImage:image];
+    }
+    else
+    {
         APParallaxView *view = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height)];
+        [view setClipsToBounds:YES];
         [view.imageView setImage:image];
         
         view.scrollView = self;
@@ -47,6 +52,34 @@ static char UIScrollViewParallaxView;
         self.contentInset = newInset;
         
         self.parallaxView = view;
+        self.showsParallax = YES;
+    }
+}
+
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height {
+    if(self.parallaxView) {
+        [self.parallaxView.currentSubView removeFromSuperview];
+        [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+        [self.parallaxView addSubview:view];
+    }
+    else
+    {
+        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height)];
+        [parallaxView setClipsToBounds:YES];
+        [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+        [parallaxView addSubview:view];
+        
+        parallaxView.scrollView = self;
+        parallaxView.parallaxHeight = height;
+        [self addSubview:parallaxView];
+        
+        parallaxView.originalTopInset = self.contentInset.top;
+        
+        UIEdgeInsets newInset = self.contentInset;
+        newInset.top = height;
+        self.contentInset = newInset;
+        
+        self.parallaxView = parallaxView;
         self.showsParallax = YES;
     }
 }
@@ -168,6 +201,12 @@ static char UIScrollViewParallaxView;
             }
         }
     }
+}
+
+- (void)addSubview:(UIView *)view
+{
+    [super addSubview:view];
+    self.currentSubView = view;
 }
 
 #pragma mark - Observing
