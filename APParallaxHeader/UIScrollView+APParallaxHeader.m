@@ -31,13 +31,17 @@ static char UIScrollViewParallaxView;
 @implementation UIScrollView (APParallaxHeader)
 
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height {
+    [self addParallaxWithImage:image andHeight:height andShadow:NO];
+}
+
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow {
     if(self.parallaxView) {
         if(self.parallaxView.currentSubView) [self.parallaxView.currentSubView removeFromSuperview];
         [self.parallaxView.imageView setImage:image];
     }
     else
     {
-        APParallaxView *view = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height)];
+        APParallaxView *view = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height) andShadow:shadow];
         [view setClipsToBounds:YES];
         [view.imageView setImage:image];
         
@@ -167,7 +171,7 @@ static char UIScrollViewParallaxView;
 
 @implementation APParallaxView
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame andShadow:(BOOL)shadow {
     if(self = [super initWithFrame:frame]) {
         
         // default styling values
@@ -181,9 +185,11 @@ static char UIScrollViewParallaxView;
         [self.imageView setClipsToBounds:YES];
         [self addSubview:self.imageView];
         
-        self.shadowView = [[APParallaxShadowView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(frame)-8, CGRectGetWidth(frame), 8)];
-        [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
-        [self addSubview:self.shadowView];
+        if (shadow) {
+            self.shadowView = [[APParallaxShadowView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(frame)-8, CGRectGetWidth(frame), 8)];
+            [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
+            [self addSubview:self.shadowView];
+        }
     }
     
     return self;
