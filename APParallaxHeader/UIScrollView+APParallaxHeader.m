@@ -31,7 +31,7 @@ static char UIScrollViewParallaxView;
 @implementation UIScrollView (APParallaxHeader)
 
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height {
-    [self addParallaxWithImage:image andHeight:height andShadow:NO];
+    [self addParallaxWithImage:image andHeight:height andShadow:YES];
 }
 
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow {
