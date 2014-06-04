@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.summary  = 'Add a parallax header view to your table views with one row of code.'
   s.homepage = 'https://github.com/apping/APParallaxHeader'
   s.author   = { 'Mathias Amnell' => 'mathias@apping.se' }
-  s.source   = { :git => 'https://github.com/apping/APParallaxHeader.git', :tag => s.version.to_s }
+  s.source   = { :git => 'https://github.com/djbe/APParallaxHeader.git', :tag => s.version.to_s }
 
   s.description = 'This category makes it super easy to add a parallax header view to your table views. Other alternatives relies on subclassing of UITableViewController or UITableView. APParallaxHeader uses the Objective-C runtime instead to add the following method to UIScrollView.'
 
