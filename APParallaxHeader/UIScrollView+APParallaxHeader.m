@@ -225,11 +225,22 @@ static char UIScrollViewParallaxView;
     } else {
         [self setState:APParallaxTrackingActive];
     }
-    
+
+	UIEdgeInsets insets = self.scrollView.contentInset;
+
     if(self.state == APParallaxTrackingActive) {
         CGFloat yOffset = contentOffset.y*-1;
         [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), yOffset)];
-    }
+
+		if (yOffset > self.parallaxHeight)
+			insets.top = self.parallaxHeight;
+		else
+			insets.top = yOffset;
+    } else {
+		insets.top = 0;
+	}
+
+	self.scrollView.contentInset = insets;
 }
 
 @end
