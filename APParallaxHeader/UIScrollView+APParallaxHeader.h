@@ -12,6 +12,7 @@
 
 @interface UIScrollView (APParallaxHeader)
 
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow;
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height;
 
@@ -28,6 +29,8 @@ enum {
 typedef NSUInteger APParallaxTrackingState;
 
 @interface APParallaxView : UIView
+
+- (id)initWithFrame:(CGRect)frame andShadow:(BOOL)shadow;
 
 @property (nonatomic, readonly) APParallaxTrackingState state;
 @property (nonatomic, strong) UIImageView *imageView;
