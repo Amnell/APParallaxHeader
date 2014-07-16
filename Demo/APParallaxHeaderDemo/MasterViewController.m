@@ -9,6 +9,8 @@
 #import "MasterViewController.h"
 #import "UIScrollView+APParallaxHeader.h"
 
+#define PARALLAX_HEIGHT 320
+
 @interface MasterViewController () <APParallaxViewDelegate> {
     BOOL parallaxWithView;
 }
@@ -21,6 +23,11 @@
     
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"with view" style:UIBarButtonItemStylePlain target:self action:@selector(toggle:)];
     [self.navigationItem setRightBarButtonItem:barButton];
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:[UIColor clearColor] size:CGSizeMake(200, 200)] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
 
     [self toggle:nil];
 }
@@ -33,9 +40,9 @@
     if(parallaxWithView == NO) {
         // add parallax with view
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Rover.jpg"]];
-        [imageView setFrame:CGRectMake(0, 0, 320, 160)];
+        [imageView setFrame:CGRectMake(0, 0, 320, PARALLAX_HEIGHT)];
         [imageView setContentMode:UIViewContentModeScaleAspectFill];
-        [self.tableView addParallaxWithView:imageView andHeight:160];
+        [self.tableView addParallaxWithView:imageView andHeight:PARALLAX_HEIGHT];
         parallaxWithView = YES;
         
         // Update the toggle button
@@ -44,7 +51,7 @@
     }
     else {
         // add parallax with image
-        [self.tableView addParallaxWithImage:[UIImage imageNamed:@"ParallaxImage.jpg"] andHeight:160];
+        [self.tableView addParallaxWithImage:[UIImage imageNamed:@"ParallaxImage.jpg"] andHeight:PARALLAX_HEIGHT];
         parallaxWithView = NO;
         
         // Update the toggle button
@@ -74,7 +81,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 
-    cell.textLabel.text = [NSString stringWithFormat:@"Row %i", indexPath.row+1];
+    cell.textLabel.text = [NSString stringWithFormat:@"Row %li", indexPath.row+1];
     return cell;
 }
 

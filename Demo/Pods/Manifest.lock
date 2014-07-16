@@ -1,0 +1,10 @@
+PODS:
+  - UIImage+Additions (1.1.0)
+
+DEPENDENCIES:
+  - UIImage+Additions
+
+SPEC CHECKSUMS:
+  UIImage+Additions: 66ee88773215955a2703ea31b790fdf3438303d9
+
+COCOAPODS: 0.33.1
