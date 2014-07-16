@@ -1,9 +1,11 @@
 # APParallaxHeader
 
-This category makes it super easy to add a parallax header view to your table views. Other alternatives relies on subclassing of `UITableViewController` or `UITableView`. APParallaxHeader uses the Objective-C runtime instead to add the following method to `UIScrollView`
+This category makes it super easy to add a parallax header view to your scroll views. Other alternatives relies on subclassing of `UIScrollView`, `UITableViewController` or `UITableView`. Instead APParallaxHeader uses the Objective-C runtime to add the two following methods to `UIScrollView` without the need to do any subclassing.
 
 ```objective-c
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow;
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height;
 ```
 
 
@@ -16,14 +18,14 @@ This category makes it super easy to add a parallax header view to your table vi
 
 ### From CocoaPods
 
-Add `pod 'APParallaxHeader'` to your Podfile or `pod 'APParallaxHeader', :head` if you're feeling adventurous.
+Add `pod 'APParallaxHeader'` to your Podfile (or `pod 'APParallaxHeader', :head` if you're feeling adventurous, and want to live on the edge).
 
 ### Manually
 
 _**Important note if your project doesn't use ARC**: you must add the `-fobjc-arc` compiler flag to `UIScrollView+ APParallaxHeader.m` in Target Settings > Build Phases > Compile Sources._
 
 * Drag the `APParallaxHeader/APParallaxHeader` folder into your project.
-* Import `UIScrollView+APParallaxHeader.h`
+* \#import `UIScrollView+APParallaxHeader.h` wherever you feel the need.
 
 ## Usage
 
@@ -35,14 +37,47 @@ _**Important note if your project doesn't use ARC**: you must add the `-fobjc-ar
 [tableView addParallaxWithImage:[UIImage imageNamed:@"ImageName"] andHeight:160];
 ```
 
+### Adding Parallax custom view
+
+Note: When adding a custom view. Either use ```APParallaxViewDelegate```, auto layout constraints or ```contentMode``` to resize your custom view during scrolling.
+
+```objective-c
+UIView *customView = [[UIView alloc] init];
+[customView setFrame:CGRectMake(0, 0, 320, 160)];
+[self.tableView addParallaxWithView:customView andHeight:160];
+
+[self.tableView.parallaxView setDelegate:self];
+```
+
+### APParallaxViewDelegate
+
+APParallaxViewDelegate will notify the delegate about resizing of the parallax view.
+
+####Methods:####
+
+* ```- (void)parallaxView:(APParallaxView *)view willChangeFrame:(CGRect)frame```
+* ```- (void)parallaxView:(APParallaxView *)view didChangeFrame:(CGRect)frame```
+
 ## ToDo
 
-* Ability to set a custom view as a ParallaxView
 * Ability to customize the drop shadow size, opacity, color etc.
 * Setting a minimum height
 * Setting contentMode of the imageView
 
+## Known issues
+
+* Section headers for tableviews with style ```UITableViewStylePlain``` will not be pinned as expected during scrolling.
+
 ## Changelog
+
+**0.1.5**
+
+* Added delegate callbacks for APParallaxView resizes (```APParallaxViewDelegate```).
+
+**0.1.4**
+
+* Ability to inititate with or without an inner shadow.
+* Ability to set a custom view as a parallax view.
 
 **0.1.3**
 
