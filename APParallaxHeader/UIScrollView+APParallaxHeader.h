@@ -10,6 +10,8 @@
 @class APParallaxView;
 @class APParallaxShadowView;
 
+#pragma mark UIScrollView Category
+
 @interface UIScrollView (APParallaxHeader)
 
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
@@ -20,18 +22,14 @@
 
 @end
 
-enum {
+#pragma mark APParallaxView
+
+@protocol APParallaxViewDelegate;
+
+typedef NS_ENUM(NSUInteger, APParallaxTrackingState) {
     APParallaxTrackingActive = 0,
     APParallaxTrackingInactive
 };
-
-typedef NSUInteger APParallaxTrackingState;
-
-@protocol APParallaxViewDelegate <NSObject>
-@optional
-- (void)APParallaxView:(APParallaxView *)view willChangeFrame:(CGRect)frame;
-- (void)APParallaxView:(APParallaxView *)view didChangeFrame:(CGRect)frame;
-@end
 
 @interface APParallaxView : UIView
 
@@ -43,6 +41,14 @@ typedef NSUInteger APParallaxTrackingState;
 @property (nonatomic, strong) APParallaxShadowView *shadowView;
 
 @end
+
+@protocol APParallaxViewDelegate <NSObject>
+@optional
+- (void)parallaxView:(APParallaxView *)view willChangeFrame:(CGRect)frame;
+- (void)parallaxView:(APParallaxView *)view didChangeFrame:(CGRect)frame;
+@end
+
+#pragma mark APParallaxShadowView
 
 @interface APParallaxShadowView : UIView
 
