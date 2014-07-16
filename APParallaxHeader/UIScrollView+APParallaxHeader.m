@@ -21,8 +21,6 @@
 
 @end
 
-
-
 #pragma mark - UIScrollView (APParallaxHeader)
 #import <objc/runtime.h>
 
@@ -117,6 +115,10 @@ static char UIScrollViewParallaxView;
     return !self.parallaxView.hidden;
 }
 
+- (void)didMoveToSuperview {
+    [super didMoveToSuperview];
+}
+
 @end
 
 #pragma mark - ShadowLayer
@@ -203,8 +205,7 @@ static char UIScrollViewParallaxView;
     }
 }
 
-- (void)addSubview:(UIView *)view
-{
+- (void)addSubview:(UIView *)view {
     [super addSubview:view];
     self.currentSubView = view;
 }
@@ -212,23 +213,34 @@ static char UIScrollViewParallaxView;
 #pragma mark - Observing
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if([keyPath isEqualToString:@"contentOffset"])
+    if([keyPath isEqualToString:@"contentOffset"]) {
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
-    else if([keyPath isEqualToString:@"frame"])
+    }
+    else if([keyPath isEqualToString:@"frame"]) {
         [self layoutSubviews];
+    }
 }
 
+#define MIN_HEIGHT 64
+
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
-    // We do not want to track when the parallax view is hidden
-    if (contentOffset.y > 0) {
-        [self setState:APParallaxTrackingInactive];
-    } else {
-        [self setState:APParallaxTrackingActive];
+    // Resize/reposition the parallaxView based on the content offset
+    CGFloat yOffset = contentOffset.y*-1;
+    if (yOffset <= MIN_HEIGHT) {
+        CGRect rect = self.frame;
+        rect.origin.y = contentOffset.y;
+        rect.size.height = MAX(MIN_HEIGHT, yOffset);
+        self.frame = rect;
+    }
+    else {
+        [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), yOffset)];
     }
     
-    if(self.state == APParallaxTrackingActive) {
-        CGFloat yOffset = contentOffset.y*-1;
-        [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), yOffset)];
+    // Correct the scroll indicator position
+    if (self.scrollView.contentOffset.y < -self.parallaxHeight) {
+        [self.scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.scrollView.contentInset.top+(abs(self.scrollView.contentOffset.y)-self.parallaxHeight), 0, 0, 0)];
+    } else {
+        [self.scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.scrollView.contentInset.top, 0, 0, 0)];
     }
 }
 
