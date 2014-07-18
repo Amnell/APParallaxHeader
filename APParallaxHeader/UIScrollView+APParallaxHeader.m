@@ -162,7 +162,7 @@ static char UIScrollViewParallaxView;
     //// Cleanup
     CGGradientRelease(gradient3);
     CGColorSpaceRelease(colorSpace);
-
+    
 }
 
 @end
@@ -236,7 +236,15 @@ static char UIScrollViewParallaxView;
 
     if(self.state == APParallaxTrackingActive) {
         CGFloat yOffset = contentOffset.y*-1;
+        if ([self.delegate respondsToSelector:@selector(parallaxView:willChangeFrame:)]) {
+            [self.delegate parallaxView:self willChangeFrame:self.frame];
+        }
+        
         [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), yOffset)];
+
+        if ([self.delegate respondsToSelector:@selector(parallaxView:didChangeFrame:)]) {
+            [self.delegate parallaxView:self didChangeFrame:self.frame];
+        }
 
 		if (yOffset > self.parallaxHeight)
 			insets.top = self.parallaxHeight;
