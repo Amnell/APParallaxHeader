@@ -70,6 +70,10 @@ APParallaxViewDelegate will notify the delegate about resizing of the parallax v
 
 ## Changelog
 
+**0.1.6**
+
+* Re-added/fixed optional shadow implementation
+
 **0.1.5**
 
 * Added delegate callbacks for APParallaxView resizes (```APParallaxViewDelegate```).
