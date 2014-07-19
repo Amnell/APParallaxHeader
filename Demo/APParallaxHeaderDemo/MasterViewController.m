@@ -11,9 +11,10 @@
 
 #define PARALLAX_HEIGHT 320
 
-@interface MasterViewController () <APParallaxViewDelegate> {
-    BOOL parallaxWithView;
-}
+@interface MasterViewController () <APParallaxViewDelegate>
+
+@property (nonatomic) BOOL parallaxWithView;
+
 @end
 
 @implementation MasterViewController
@@ -37,13 +38,13 @@
      *  For demo purposes this view controller either adds a parallaxView with a custom view
      *  or a parallaxView with an image.
      */
-    if(parallaxWithView == NO) {
+    if(_parallaxWithView == NO) {
         // add parallax with view
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Rover.jpg"]];
         [imageView setFrame:CGRectMake(0, 0, 320, PARALLAX_HEIGHT)];
         [imageView setContentMode:UIViewContentModeScaleAspectFill];
         [self.tableView addParallaxWithView:imageView andHeight:PARALLAX_HEIGHT];
-        parallaxWithView = YES;
+        _parallaxWithView = YES;
         
         // Update the toggle button
         UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"with image" style:UIBarButtonItemStylePlain target:self action:@selector(toggle:)];
@@ -52,7 +53,7 @@
     else {
         // add parallax with image
         [self.tableView addParallaxWithImage:[UIImage imageNamed:@"ParallaxImage.jpg"] andHeight:PARALLAX_HEIGHT];
-        parallaxWithView = NO;
+        _parallaxWithView = NO;
         
         // Update the toggle button
         UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"with view" style:UIBarButtonItemStylePlain target:self action:@selector(toggle:)];

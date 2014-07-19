@@ -115,6 +115,10 @@ static char UIScrollViewParallaxView;
     return !self.parallaxView.hidden;
 }
 
+- (void)didMoveToSuperview {
+    [super didMoveToSuperview];
+}
+
 @end
 
 #pragma mark - ShadowLayer
