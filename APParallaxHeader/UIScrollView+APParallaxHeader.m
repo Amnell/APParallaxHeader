@@ -9,9 +9,9 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-@interface APParallaxView ()
+static char contentOffsetContext;
 
-@property (nonatomic, readwrite) APParallaxTrackingState state;
+@interface APParallaxView ()
 
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, readwrite) CGFloat originalTopInset;
@@ -60,7 +60,7 @@ static char UIScrollViewParallaxView;
     }
 }
 
-- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height {
+- (void)addParallaxWithView:(UIView *)view andHeight:(CGFloat)height {
     if(self.parallaxView) {
         [self.parallaxView.currentSubView removeFromSuperview];
         [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
@@ -104,14 +104,12 @@ static char UIScrollViewParallaxView;
     if(!showsParallax) {
         if (self.parallaxView.isObserving) {
             [self removeObserver:self.parallaxView forKeyPath:@"contentOffset"];
-            [self removeObserver:self.parallaxView forKeyPath:@"frame"];
             self.parallaxView.isObserving = NO;
         }
     }
     else {
         if (!self.parallaxView.isObserving) {
-            [self addObserver:self.parallaxView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
-            [self addObserver:self.parallaxView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:self.parallaxView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:&contentOffsetContext];
             self.parallaxView.isObserving = YES;
         }
     }
@@ -185,7 +183,6 @@ static char UIScrollViewParallaxView;
     if(self = [super initWithFrame:frame]) {
         // default styling values
         [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
-        [self setState:APParallaxTrackingActive];
         [self setAutoresizesSubviews:YES];
         
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame))];
@@ -211,7 +208,6 @@ static char UIScrollViewParallaxView;
             if (self.isObserving) {
                 //If enter this branch, it is the moment just before "APParallaxView's dealloc", so remove observer here
                 [scrollView removeObserver:self forKeyPath:@"contentOffset"];
-                [scrollView removeObserver:self forKeyPath:@"frame"];
                 self.isObserving = NO;
             }
         }
@@ -226,38 +222,33 @@ static char UIScrollViewParallaxView;
 #pragma mark - Observing
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if([keyPath isEqualToString:@"contentOffset"]) {
+    if(context == &contentOffsetContext) {
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
-    }
-    else if([keyPath isEqualToString:@"frame"]) {
-        [self layoutSubviews];
     }
 }
 
-#define MIN_HEIGHT 64
+#define MIN_HEIGHT 0
+
+- (void)setFrame:(CGRect)frame {
+    if ([self.delegate respondsToSelector:@selector(parallaxView:willChangeFrame:)]) {
+        [self.delegate parallaxView:self willChangeFrame:self.frame];
+    }
+    
+    [super setFrame:frame];
+    
+    if ([self.delegate respondsToSelector:@selector(parallaxView:didChangeFrame:)]) {
+        [self.delegate parallaxView:self didChangeFrame:self.frame];
+    }
+}
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
     // Resize/reposition the parallaxView based on the content offset
     CGFloat yOffset = contentOffset.y*-1;
-    if (yOffset <= MIN_HEIGHT) {
-        CGRect rect = self.frame;
-        rect.origin.y = contentOffset.y;
-        rect.size.height = MAX(MIN_HEIGHT, yOffset);
-        self.frame = rect;
-    }
-    else {
-        if ([self.delegate respondsToSelector:@selector(parallaxView:willChangeFrame:)]) {
-            [self.delegate parallaxView:self willChangeFrame:self.frame];
-        }
-        
-        [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), yOffset)];
-        
-        if ([self.delegate respondsToSelector:@selector(parallaxView:didChangeFrame:)]) {
-            [self.delegate parallaxView:self didChangeFrame:self.frame];
-        }
-    }
+    CGFloat height = MAX(MIN_HEIGHT, yOffset);
+    [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), height)];
 
     // Correct the scroll indicator position
+    // Without this the scroll indicator will be displayed on top of the parallax view
     if (self.scrollView.contentOffset.y < -self.parallaxHeight) {
         [self.scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.scrollView.contentInset.top+(abs(self.scrollView.contentOffset.y)-self.parallaxHeight), 0, 0, 0)];
     }
