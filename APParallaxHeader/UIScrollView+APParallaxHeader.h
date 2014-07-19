@@ -14,6 +14,7 @@
 
 @interface UIScrollView (APParallaxHeader)
 
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow;
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height;
 
@@ -39,6 +40,8 @@ typedef NS_ENUM(NSUInteger, APParallaxTrackingState) {
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *currentSubView;
 @property (nonatomic, strong) APParallaxShadowView *shadowView;
+
+- (id)initWithFrame:(CGRect)frame andShadow:(BOOL)shadow;
 
 @end
 
