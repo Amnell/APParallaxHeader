@@ -39,8 +39,7 @@ static char UIScrollViewParallaxView;
         }
         [self.parallaxView.imageView setImage:image];
     }
-    else
-    {
+    else {
         APParallaxView *view = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height) andShadow:shadow];
         [view setClipsToBounds:YES];
         [view.imageView setImage:image];
