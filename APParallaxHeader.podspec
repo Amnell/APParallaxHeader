@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'APParallaxHeader'
-  s.version  = '0.1.5'
+  s.version  = '0.1.6'
   s.platform = :ios, '5.0'
   s.license  = 'MIT'
   s.summary  = 'Add a parallax header view to your table views with one row of code.'

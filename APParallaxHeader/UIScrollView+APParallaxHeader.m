@@ -36,7 +36,9 @@ static char UIScrollViewParallaxView;
 
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow {
     if(self.parallaxView) {
-        if(self.parallaxView.currentSubView) [self.parallaxView.currentSubView removeFromSuperview];
+        if(self.parallaxView.currentSubView) {
+            [self.parallaxView.currentSubView removeFromSuperview];
+        }
         [self.parallaxView.imageView setImage:image];
     }
     else
@@ -126,8 +128,8 @@ static char UIScrollViewParallaxView;
 #pragma mark - ShadowLayer
 
 @implementation APParallaxShadowView
-- (id)initWithFrame:(CGRect)frame
-{
+
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self setOpaque:NO];
@@ -135,8 +137,7 @@ static char UIScrollViewParallaxView;
     return self;
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
     
     //// General Declarations
@@ -170,6 +171,14 @@ static char UIScrollViewParallaxView;
 #pragma mark - APParallaxView
 
 @implementation APParallaxView
+
+- (id)initWithFrame:(CGRect)frame {
+    self = [self initWithFrame:frame andShadow:YES];
+    if (self) {
+        
+    }
+    return self;
+}
 
 - (id)initWithFrame:(CGRect)frame andShadow:(BOOL)shadow {
     if(self = [super initWithFrame:frame]) {
@@ -209,8 +218,7 @@ static char UIScrollViewParallaxView;
     }
 }
 
-- (void)addSubview:(UIView *)view
-{
+- (void)addSubview:(UIView *)view {
     [super addSubview:view];
     self.currentSubView = view;
 }

@@ -44,7 +44,7 @@
     }
     else {
         // add parallax with image
-        [self.tableView addParallaxWithImage:[UIImage imageNamed:@"ParallaxImage.jpg"] andHeight:160];
+        [self.tableView addParallaxWithImage:[UIImage imageNamed:@"ParallaxImage.jpg"] andHeight:160 andShadow:YES];
         parallaxWithView = NO;
         
         // Update the toggle button

@@ -43,6 +43,8 @@ typedef NS_ENUM(NSUInteger, APParallaxTrackingState) {
 @property (nonatomic, strong) UIView *currentSubView;
 @property (nonatomic, strong) APParallaxShadowView *shadowView;
 
+- (id)initWithFrame:(CGRect)frame andShadow:(BOOL)shadow;
+
 @end
 
 @protocol APParallaxViewDelegate <NSObject>
