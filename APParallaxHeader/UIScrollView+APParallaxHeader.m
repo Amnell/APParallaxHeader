@@ -196,7 +196,7 @@ static char UIScrollViewParallaxView;
         
         if (shadow) {
             self.shadowView = [[APParallaxShadowView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(frame)-8, CGRectGetWidth(frame), 8)];
-            [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
+            [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleWidth];
             [self addSubview:self.shadowView];
         }
     }
