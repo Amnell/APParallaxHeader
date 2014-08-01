@@ -34,6 +34,8 @@ typedef NS_ENUM(NSUInteger, APParallaxTrackingState) {
 
 @interface APParallaxView : UIView
 
+- (id)initWithFrame:(CGRect)frame andShadow:(BOOL)shadow;
+
 @property (weak) id<APParallaxViewDelegate> delegate;
 
 @property (nonatomic, readonly) APParallaxTrackingState state;

@@ -184,19 +184,19 @@ static char UIScrollViewParallaxView;
     if(self = [super initWithFrame:frame]) {
         
         // default styling values
-        [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
+        [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
         [self setState:APParallaxTrackingActive];
         [self setAutoresizesSubviews:YES];
         
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame))];
-        [self.imageView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
+        [self.imageView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
         [self.imageView setContentMode:UIViewContentModeScaleAspectFill];
         [self.imageView setClipsToBounds:YES];
         [self addSubview:self.imageView];
         
         if (shadow) {
             self.shadowView = [[APParallaxShadowView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(frame)-8, CGRectGetWidth(frame), 8)];
-            [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin];
+            [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleWidth];
             [self addSubview:self.shadowView];
         }
     }
@@ -239,7 +239,7 @@ static char UIScrollViewParallaxView;
     } else {
         [self setState:APParallaxTrackingActive];
     }
-    
+
     if(self.state == APParallaxTrackingActive) {
         CGFloat yOffset = contentOffset.y*-1;
         if ([self.delegate respondsToSelector:@selector(parallaxView:willChangeFrame:)]) {
@@ -247,7 +247,7 @@ static char UIScrollViewParallaxView;
         }
         
         [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), yOffset)];
-        
+
         if ([self.delegate respondsToSelector:@selector(parallaxView:didChangeFrame:)]) {
             [self.delegate parallaxView:self didChangeFrame:self.frame];
         }
