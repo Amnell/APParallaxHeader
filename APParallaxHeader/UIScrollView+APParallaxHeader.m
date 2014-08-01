@@ -240,8 +240,6 @@ static char UIScrollViewParallaxView;
         [self setState:APParallaxTrackingActive];
     }
 
-	UIEdgeInsets insets = self.scrollView.contentInset;
-
     if(self.state == APParallaxTrackingActive) {
         CGFloat yOffset = contentOffset.y*-1;
         if ([self.delegate respondsToSelector:@selector(parallaxView:willChangeFrame:)]) {
@@ -253,16 +251,7 @@ static char UIScrollViewParallaxView;
         if ([self.delegate respondsToSelector:@selector(parallaxView:didChangeFrame:)]) {
             [self.delegate parallaxView:self didChangeFrame:self.frame];
         }
-
-		if (yOffset > self.parallaxHeight)
-			insets.top = self.parallaxHeight;
-		else
-			insets.top = yOffset;
-    } else {
-		insets.top = 0;
-	}
-
-	self.scrollView.contentInset = insets;
+    }
 }
 
 @end
