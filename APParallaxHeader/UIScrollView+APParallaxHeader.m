@@ -223,6 +223,15 @@ static char UIScrollViewParallaxView;
     self.currentSubView = view;
 }
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    if (self.shadowView) {
+        [self bringSubviewToFront:self.shadowView];
+    }
+}
+
 #pragma mark - Observing
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
