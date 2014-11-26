@@ -62,7 +62,12 @@ static char UIScrollViewParallaxView;
     }
 }
 
+
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height {
+    [self addParallaxWithView:view andHeight:height andShadow:YES];
+}
+
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andShadow:(BOOL)shadow {
     if(self.parallaxView) {
         [self.parallaxView.currentSubView removeFromSuperview];
         [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
@@ -70,7 +75,7 @@ static char UIScrollViewParallaxView;
     }
     else
     {
-        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height)];
+        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height) andShadow:shadow];
         [parallaxView setClipsToBounds:YES];
         
         [parallaxView setCustomView:view];
@@ -78,6 +83,11 @@ static char UIScrollViewParallaxView;
         parallaxView.scrollView = self;
         parallaxView.parallaxHeight = height;
         [self addSubview:parallaxView];
+        
+        if (shadow) {
+            // bring shadow to front
+            [parallaxView bringSubviewToFront:parallaxView.shadowView];
+        }
 
         parallaxView.originalTopInset = self.contentInset.top;
         
@@ -89,6 +99,7 @@ static char UIScrollViewParallaxView;
         self.showsParallax = YES;
     }
 }
+
 
 - (void)setParallaxView:(APParallaxView *)parallaxView {
     objc_setAssociatedObject(self, &UIScrollViewParallaxView,
