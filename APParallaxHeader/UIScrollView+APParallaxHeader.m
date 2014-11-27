@@ -15,7 +15,9 @@
 
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, readwrite) CGFloat originalTopInset;
-@property (nonatomic) CGFloat parallaxHeight;
+@property (nonatomic) CGFloat parallaxPortraitHeight;
+@property (nonatomic) CGFloat parallaxLandscapeHeight;
+@property (nonatomic) CGFloat heightRatio;
 
 @property(nonatomic, assign) BOOL isObserving;
 
@@ -35,6 +37,11 @@ static char UIScrollViewParallaxView;
 }
 
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow {
+    [self addParallaxWithImage:image portraitHeight:height landscapeHeight:height andShadow:shadow];
+}
+
+- (void)addParallaxWithImage:(UIImage *)image heightRatio:(CGFloat)heightRatio andShadow:(BOOL)shadow
+{
     if(self.parallaxView) {
         if(self.parallaxView.currentSubView) {
             [self.parallaxView.currentSubView removeFromSuperview];
@@ -43,56 +50,100 @@ static char UIScrollViewParallaxView;
     }
     else
     {
-        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width*2, height) andShadow:shadow];
-        [parallaxView setClipsToBounds:YES];
-        [parallaxView.imageView setImage:image];
+        CGFloat heightByRatio = heightRatio * self.bounds.size.width;
         
-        parallaxView.scrollView = self;
-        parallaxView.parallaxHeight = height;
-        [self addSubview:parallaxView];
+        APParallaxView *view = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, heightRatio) andShadow:shadow];
+        [view setClipsToBounds:YES];
+        [view.imageView setImage:image];
         
-        parallaxView.originalTopInset = self.contentInset.top;
+        view.scrollView = self;
+        view.heightRatio = heightRatio;
+        [self addSubview:view];
+        
+        view.originalTopInset = self.contentInset.top;
         
         UIEdgeInsets newInset = self.contentInset;
-        newInset.top = height;
+        newInset.top = heightByRatio;
         self.contentInset = newInset;
         
-        self.parallaxView = parallaxView;
+        self.parallaxView = view;
         self.showsParallax = YES;
     }
 }
 
+- (void)addParallaxWithImage:(UIImage *)image portraitHeight:(CGFloat)portraitHeight landscapeHeight:(CGFloat)landscapeHeight andShadow:(BOOL)shadow {
+    if(self.parallaxView) {
+        if(self.parallaxView.currentSubView) {
+            [self.parallaxView.currentSubView removeFromSuperview];
+        }
+        [self.parallaxView.imageView setImage:image];
+    }
+    else
+    {
+        CGFloat heightForCurrentOrientation;
+        if (UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) {
+            heightForCurrentOrientation = landscapeHeight;
+        } else {
+            heightForCurrentOrientation = portraitHeight;
+        }
+        
+        APParallaxView *view = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, heightForCurrentOrientation) andShadow:shadow];
+        [view setClipsToBounds:YES];
+        [view.imageView setImage:image];
+        
+        view.scrollView = self;
+        view.parallaxLandscapeHeight = landscapeHeight;
+        view.parallaxPortraitHeight = portraitHeight;
+        view.heightRatio = -1;
+        [self addSubview:view];
+        
+        view.originalTopInset = self.contentInset.top;
+        
+        UIEdgeInsets newInset = self.contentInset;
+        newInset.top = heightForCurrentOrientation;
+        self.contentInset = newInset;
+        
+        self.parallaxView = view;
+        self.showsParallax = YES;
+    }
+}
 
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height {
     [self addParallaxWithView:view andHeight:height andShadow:YES];
 }
 
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andShadow:(BOOL)shadow {
+    [self addParallaxWithView:view portraitHeight:height landscapeHeight:height andShadow:shadow];
+}
+
+- (void)addParallaxWithView:(UIView *)view heightRatio:(CGFloat)heightRatio andShadow:(BOOL)shadow {
     if(self.parallaxView) {
         [self.parallaxView.currentSubView removeFromSuperview];
         [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-        [self.parallaxView setCustomView:view];
+        [self.parallaxView addSubview:view];
     }
     else
     {
-        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height) andShadow:shadow];
+        CGFloat heightByRatio = heightRatio * self.bounds.size.width;
+        
+        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, heightByRatio) andShadow:YES];
         [parallaxView setClipsToBounds:YES];
+        [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+        [parallaxView addSubview:view];
         
-        [parallaxView setCustomView:view];
-        
-        parallaxView.scrollView = self;
-        parallaxView.parallaxHeight = height;
-        [self addSubview:parallaxView];
-        
+        // bring shadow to foreground
         if (shadow) {
-            // bring shadow to front
             [parallaxView bringSubviewToFront:parallaxView.shadowView];
         }
-
+        
+        parallaxView.scrollView = self;
+        parallaxView.heightRatio = heightRatio;
+        [self addSubview:parallaxView];
+        
         parallaxView.originalTopInset = self.contentInset.top;
         
         UIEdgeInsets newInset = self.contentInset;
-        newInset.top = height;
+        newInset.top = heightByRatio;
         self.contentInset = newInset;
         
         self.parallaxView = parallaxView;
@@ -100,6 +151,78 @@ static char UIScrollViewParallaxView;
     }
 }
 
+- (void)addParallaxWithView:(UIView*)view portraitHeight:(CGFloat)portraitHeight landscapeHeight:(CGFloat)landscapeHeight andShadow:(BOOL)shadow {
+    if(self.parallaxView) {
+        [self.parallaxView.currentSubView removeFromSuperview];
+        [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+        [self.parallaxView addSubview:view];
+    }
+    else
+    {
+        CGFloat heightForCurrentOrientation;
+        if (UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) {
+            heightForCurrentOrientation = landscapeHeight;
+        } else {
+            heightForCurrentOrientation = portraitHeight;
+        }
+        
+        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, heightForCurrentOrientation) andShadow:YES];
+        [parallaxView setClipsToBounds:YES];
+        [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+        [parallaxView addSubview:view];
+        
+        // bring shadow to foreground
+        if (shadow) {
+            [parallaxView bringSubviewToFront:parallaxView.shadowView];
+        }
+        
+        parallaxView.scrollView = self;
+        parallaxView.parallaxLandscapeHeight = landscapeHeight;
+        parallaxView.parallaxPortraitHeight = portraitHeight;
+        parallaxView.heightRatio = -1;
+        [self addSubview:parallaxView];
+        
+        parallaxView.originalTopInset = self.contentInset.top;
+        
+        UIEdgeInsets newInset = self.contentInset;
+        newInset.top = heightForCurrentOrientation;
+        self.contentInset = newInset;
+        
+        self.parallaxView = parallaxView;
+        self.showsParallax = YES;
+    }
+}
+
+- (void)rotateParallaxViewToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    if (self.parallaxView) {
+        if (self.parallaxView.heightRatio > 0) {
+            CGFloat heightByRatio = self.bounds.size.width * self.parallaxView.heightRatio;
+            
+            CGRect frame = self.parallaxView.frame;
+            frame.size.height = heightByRatio;
+            self.parallaxView.frame = frame;
+            
+            UIEdgeInsets newInset = self.contentInset;
+            newInset.top = heightByRatio;
+            self.contentInset = newInset;
+        } else {
+            CGFloat heightForCurrentOrientation;
+            if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+                heightForCurrentOrientation = self.parallaxView.parallaxLandscapeHeight;
+            } else {
+                heightForCurrentOrientation = self.parallaxView.parallaxPortraitHeight;
+            }
+            
+            CGRect frame = self.parallaxView.frame;
+            frame.size.height = heightForCurrentOrientation;
+            self.parallaxView.frame = frame;
+            
+            UIEdgeInsets newInset = self.contentInset;
+            newInset.top = heightForCurrentOrientation;
+            self.contentInset = newInset;
+        }
+    }
+}
 
 - (void)setParallaxView:(APParallaxView *)parallaxView {
     objc_setAssociatedObject(self, &UIScrollViewParallaxView,
@@ -194,27 +317,21 @@ static char UIScrollViewParallaxView;
 - (id)initWithFrame:(CGRect)frame andShadow:(BOOL)shadow {
     if(self = [super initWithFrame:frame]) {
         
-        [self setBackgroundColor:[UIColor redColor]];
-        
         // default styling values
-        [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
+        [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
         [self setState:APParallaxTrackingActive];
+        [self setAutoresizesSubviews:YES];
         
-        self.imageView = [[UIImageView alloc] init];
+        self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame))];
+        [self.imageView setAutoresizingMask:UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth];
         [self.imageView setContentMode:UIViewContentModeScaleAspectFill];
         [self.imageView setClipsToBounds:YES];
         [self addSubview:self.imageView];
         
-        [self.imageView setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|" options:0 metrics:nil views:@{@"imageView" : self.imageView}]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[imageView]|" options:0 metrics:nil views:@{@"imageView" : self.imageView}]];
-        
         if (shadow) {
-            self.shadowView = [[APParallaxShadowView alloc] init];
+            self.shadowView = [[APParallaxShadowView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(frame)-8, CGRectGetWidth(frame), 8)];
+            [self.shadowView setAutoresizingMask:UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleWidth];
             [self addSubview:self.shadowView];
-            [self.shadowView setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[shadowView(8.0)]|" options:NSLayoutFormatAlignAllBottom metrics:nil views:@{@"shadowView" : self.shadowView}]];
-            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[shadowView]|" options:0 metrics:nil views:@{@"shadowView" : self.shadowView}]];
         }
     }
     
@@ -240,38 +357,13 @@ static char UIScrollViewParallaxView;
     self.currentSubView = view;
 }
 
-- (void)setCustomView:(UIView *)customView
-{
-    if (_customView) {
-        [_customView removeFromSuperview];
-    }
-    
-    _customView = customView;
-    
-    [self addSubview:customView];
-    [customView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[customView]|" options:0 metrics:nil views:@{@"customView" : customView}]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[customView]|" options:0 metrics:nil views:@{@"customView" : customView}]];
-}
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-    if (self.shadowView) {
-        [self bringSubviewToFront:self.shadowView];
-    }
-}
-
 #pragma mark - Observing
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if([keyPath isEqualToString:@"contentOffset"]) {
+    if([keyPath isEqualToString:@"contentOffset"])
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
-    }
-    else if([keyPath isEqualToString:@"frame"]) {
+    else if([keyPath isEqualToString:@"frame"])
         [self layoutSubviews];
-    }
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
