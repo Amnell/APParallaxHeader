@@ -14,9 +14,15 @@
 
 @interface UIScrollView (APParallaxHeader)
 
+- (void)addParallaxWithImage:(UIImage *)image portraitHeight:(CGFloat)portraitHeight landscapeHeight:(CGFloat)landscapeHeight andShadow:(BOOL)shadow;
+- (void)addParallaxWithImage:(UIImage *)image heightRatio:(CGFloat)heightRatio andShadow:(BOOL)shadow;
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow;
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
+- (void)addParallaxWithView:(UIView*)view portraitHeight:(CGFloat)portraitHeight landscapeHeight:(CGFloat)landscapeHeight andShadow:(BOOL)shadow;
+- (void)addParallaxWithView:(UIView*)view heightRatio:(CGFloat)heightRatio andShadow:(BOOL)shadow;
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andShadow:(BOOL)shadow;
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height;
+- (void)rotateParallaxViewToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 
 @property (nonatomic, strong, readonly) APParallaxView *parallaxView;
 @property (nonatomic, assign) BOOL showsParallax;
@@ -40,7 +46,6 @@ typedef NS_ENUM(NSUInteger, APParallaxTrackingState) {
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIView *currentSubView;
 @property (nonatomic, strong) APParallaxShadowView *shadowView;
-@property (nonatomic, strong) UIView *customView;
 
 - (id)initWithFrame:(CGRect)frame andShadow:(BOOL)shadow;
 
