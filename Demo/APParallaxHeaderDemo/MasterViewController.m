@@ -74,7 +74,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
 
-    cell.textLabel.text = [NSString stringWithFormat:@"Row %i", indexPath.row+1];
+    cell.textLabel.text = [NSString stringWithFormat:@"Row %li", indexPath.row+1];
     return cell;
 }
 
