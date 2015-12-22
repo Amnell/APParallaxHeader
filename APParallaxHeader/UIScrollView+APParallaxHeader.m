@@ -183,7 +183,7 @@ static char UIScrollViewParallaxView;
 - (id)initWithFrame:(CGRect)frame andShadow:(BOOL)shadow {
     if(self = [super initWithFrame:frame]) {
         
-        [self setBackgroundColor:[UIColor redColor]];
+        [self setBackgroundColor:[UIColor clearColor]];
         
         // default styling values
         [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
