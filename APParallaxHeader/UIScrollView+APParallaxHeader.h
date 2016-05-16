@@ -39,7 +39,6 @@ typedef NS_ENUM(NSUInteger, APParallaxTrackingState) {
 
 @property (nonatomic, readonly) APParallaxTrackingState state;
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UIView *currentSubView;
 @property (nonatomic, strong) APParallaxShadowView *shadowView;
 @property (nonatomic, strong) UIView *customView;
 

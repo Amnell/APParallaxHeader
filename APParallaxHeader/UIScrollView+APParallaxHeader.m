@@ -21,8 +21,6 @@
 
 @end
 
-
-
 #pragma mark - UIScrollView (APParallaxHeader)
 #import <objc/runtime.h>
 
@@ -36,14 +34,15 @@ static char UIScrollViewParallaxView;
 
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow {
     if(self.parallaxView) {
-        if(self.parallaxView.currentSubView) {
-            [self.parallaxView.currentSubView removeFromSuperview];
+        if(self.parallaxView.customView) {
+            [self.parallaxView.customView removeFromSuperview];
         }
         [self.parallaxView.imageView setImage:image];
     }
     else
     {
-        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width*2, height) andShadow:shadow];
+        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height) andShadow:shadow];
+        [parallaxView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         [parallaxView setClipsToBounds:YES];
         [parallaxView.imageView setImage:image];
         
@@ -68,21 +67,22 @@ static char UIScrollViewParallaxView;
 
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andShadow:(BOOL)shadow {
     if(self.parallaxView) {
-        [self.parallaxView.currentSubView removeFromSuperview];
+        [self.parallaxView.customView removeFromSuperview];
         [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         [self.parallaxView setCustomView:view];
     }
     else
     {
         APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height) andShadow:shadow];
+        [parallaxView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         [parallaxView setClipsToBounds:YES];
-        
         [parallaxView setCustomView:view];
         
         parallaxView.scrollView = self;
         parallaxView.parallaxHeight = height;
+        
         [self addSubview:parallaxView];
-
+        
         parallaxView.originalTopInset = self.contentInset.top;
         
         UIEdgeInsets newInset = self.contentInset;
@@ -151,7 +151,7 @@ static char UIScrollViewParallaxView;
     
     //// Gradient Declarations
     NSArray* gradient3Colors = [NSArray arrayWithObjects:
-                                (id)[UIColor colorWithWhite:0 alpha:0.3].CGColor,
+                                (id)[UIColor colorWithWhite:0 alpha:0.2].CGColor,
                                 (id)[UIColor clearColor].CGColor, nil];
     CGFloat gradient3Locations[] = {0, 1};
     CGGradientRef gradient3 = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)gradient3Colors, gradient3Locations);
@@ -228,11 +228,6 @@ static char UIScrollViewParallaxView;
     }
 }
 
-- (void)addSubview:(UIView *)view {
-    [super addSubview:view];
-    self.currentSubView = view;
-}
-
 - (void)setCustomView:(UIView *)customView
 {
     if (_customView) {
@@ -241,19 +236,16 @@ static char UIScrollViewParallaxView;
     
     _customView = customView;
     
-    [self addSubview:customView];
-    [customView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[customView]|" options:0 metrics:nil views:@{@"customView" : customView}]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[customView]|" options:0 metrics:nil views:@{@"customView" : customView}]];
-}
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
     if (self.shadowView) {
-        [self bringSubviewToFront:self.shadowView];
+        [self insertSubview:customView belowSubview:self.shadowView];
     }
+    else {
+        [self addSubview:customView];
+    }
+    
+    [self.customView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[customView]|" options:0 metrics:nil views:@{@"customView" : self.customView}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[customView]|" options:0 metrics:nil views:@{@"customView" : self.customView}]];
 }
 
 #pragma mark - Observing
