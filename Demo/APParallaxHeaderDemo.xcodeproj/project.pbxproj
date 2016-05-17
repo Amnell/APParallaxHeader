@@ -20,7 +20,6 @@
 		C72B5335171834E60093E24F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C72B5334171834E60093E24F /* Default-568h@2x.png */; };
 		C72B5338171834E60093E24F /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C72B5336171834E60093E24F /* MainStoryboard.storyboard */; };
 		C72B533B171834E60093E24F /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72B533A171834E60093E24F /* MasterViewController.m */; };
-		C7AC21E319E57B1200BF5C83 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7AC21E219E57B1200BF5C83 /* Launch Screen.xib */; };
 		C7E3C5FF17183E4500489EE2 /* ParallaxImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C7E3C5FE17183E4500489EE2 /* ParallaxImage.jpg */; };
 		C7E3C605171842CA00489EE2 /* UIScrollView+APParallaxHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E3C604171842CA00489EE2 /* UIScrollView+APParallaxHeader.m */; };
 /* End PBXBuildFile section */
@@ -44,7 +43,6 @@
 		C72B5337171834E60093E24F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		C72B5339171834E60093E24F /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
 		C72B533A171834E60093E24F /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
-		C7AC21E219E57B1200BF5C83 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		C7E3C5FE17183E4500489EE2 /* ParallaxImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ParallaxImage.jpg; sourceTree = "<group>"; };
 		C7E3C603171842CA00489EE2 /* UIScrollView+APParallaxHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+APParallaxHeader.h"; sourceTree = "<group>"; };
 		C7E3C604171842CA00489EE2 /* UIScrollView+APParallaxHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+APParallaxHeader.m"; sourceTree = "<group>"; };
@@ -103,7 +101,6 @@
 				C72B5339171834E60093E24F /* MasterViewController.h */,
 				C72B533A171834E60093E24F /* MasterViewController.m */,
 				C72B5325171834E60093E24F /* Supporting Files */,
-				C7AC21E219E57B1200BF5C83 /* Launch Screen.xib */,
 			);
 			path = APParallaxHeaderDemo;
 			sourceTree = "<group>";
@@ -162,6 +159,11 @@
 			attributes = {
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Apping AB";
+				TargetAttributes = {
+					C72B531A171834E60093E24F = {
+						DevelopmentTeam = V98K4C44UG;
+					};
+				};
 			};
 			buildConfigurationList = C72B5316171834E60093E24F /* Build configuration list for PBXProject "APParallaxHeaderDemo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -190,7 +192,6 @@
 				C72B5333171834E60093E24F /* Default@2x.png in Resources */,
 				C72B5335171834E60093E24F /* Default-568h@2x.png in Resources */,
 				C72B5338171834E60093E24F /* MainStoryboard.storyboard in Resources */,
-				C7AC21E319E57B1200BF5C83 /* Launch Screen.xib in Resources */,
 				C7E3C5FF17183E4500489EE2 /* ParallaxImage.jpg in Resources */,
 				A697F31F17A02B5F003B821D /* Rover.jpg in Resources */,
 			);
@@ -291,11 +292,14 @@
 		C72B5342171834E60093E24F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "APParallaxHeaderDemo/APParallaxHeaderDemo-Prefix.pch";
 				INFOPLIST_FILE = "APParallaxHeaderDemo/APParallaxHeaderDemo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -303,11 +307,14 @@
 		C72B5343171834E60093E24F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "APParallaxHeaderDemo/APParallaxHeaderDemo-Prefix.pch";
 				INFOPLIST_FILE = "APParallaxHeaderDemo/APParallaxHeaderDemo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

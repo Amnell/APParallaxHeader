@@ -14,12 +14,39 @@
 
 @interface UIScrollView (APParallaxHeader)
 
+/**
+ *  Adds a parallax with an image, an initial height and a bottom inner shadow.
+ *
+ *  @param image  An UIImage to parallax when scrolling.
+ *  @param height The max height for the parallax header
+ *  @param shadow BOOL to show or hide the bottom inner shadow.
+ */
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow;
+
+/**
+ *  Adds a parallax with an image and an initial height.
+ *
+ *  @param image  An UIImage to parallax when scrolling.
+ *  @param height The max height for the parallax header.
+ */
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
-- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height;
+
+/**
+ *  Adds a parallax with a custom view with a given initial height.
+ *
+ *  @param view   A UIView to display in the parallax header.
+ *  @param height The max height for the parallax header.
+ */
+- (void)addParallaxWithView:(UIView *)view andHeight:(CGFloat)height;
+
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andShadow:(BOOL)shadow;
 
+
+/**
+ *  Getter for the parallaxView
+ */
 @property (nonatomic, strong, readonly) APParallaxView *parallaxView;
+
 @property (nonatomic, assign) BOOL showsParallax;
 
 @end
@@ -46,9 +73,26 @@ typedef NS_ENUM(NSUInteger, APParallaxTrackingState) {
 
 @end
 
+/**
+ *  The APParallaxView delegate will allow you to get information for when the
+ *  parallax header view will change its frame, so that you can do your repositioning etc.
+ */
 @protocol APParallaxViewDelegate <NSObject>
 @optional
+/**
+ *  Delegate call for when the APParallaxView will change its frame.
+ *
+ *  @param view  The APParallaxView that will change its frame.
+ *  @param frame The target frame.
+ */
 - (void)parallaxView:(APParallaxView *)view willChangeFrame:(CGRect)frame;
+
+/**
+ *  Delegate call for when the APParallaxView did change its frame.
+ *
+ *  @param view  The APParallaxView that changed its frame.
+ *  @param frame The target frame.
+ */
 - (void)parallaxView:(APParallaxView *)view didChangeFrame:(CGRect)frame;
 @end
 
