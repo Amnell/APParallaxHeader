@@ -25,7 +25,6 @@
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"with view" style:UIBarButtonItemStylePlain target:self action:@selector(toggle:)];
     [self.navigationItem setRightBarButtonItem:barButton];
     
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:[UIColor clearColor] size:CGSizeMake(200, 200)] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     [self.navigationController.navigationBar setShadowImage:[UIImage new]];
     
     self.automaticallyAdjustsScrollViewInsets = NO;
@@ -52,7 +51,7 @@
     }
     else {
         // add parallax with image
-        [self.tableView addParallaxWithImage:[UIImage imageNamed:@"ParallaxImage.jpg"] andHeight:PARALLAX_HEIGHT andShadow:YES];
+        [self.tableView addParallaxWithImage:[UIImage imageNamed:@"ParallaxImage.jpg"] andHeight:PARALLAX_HEIGHT andMinHeight:128 andShadow:YES];
         _parallaxWithView = NO;
         
         // Update the toggle button

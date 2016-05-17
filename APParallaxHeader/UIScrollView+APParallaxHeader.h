@@ -15,6 +15,23 @@
 @interface UIScrollView (APParallaxHeader)
 
 /**
+ *  Adds a parallax with an image and an initial height.
+ *
+ *  @param image  An UIImage to parallax when scrolling.
+ *  @param height The max height for the parallax header.
+ */
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
+
+/**
+ *  Adds a parallax with an image and an initial height.
+ *
+ *  @param image  An UIImage to parallax when scrolling.
+ *  @param height The max height for the parallax header.
+ *  @param minHeight The min height for the parallax header.
+ */
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight;
+
+/**
  *  Adds a parallax with an image, an initial height and a bottom inner shadow.
  *
  *  @param image  An UIImage to parallax when scrolling.
@@ -28,8 +45,10 @@
  *
  *  @param image  An UIImage to parallax when scrolling.
  *  @param height The max height for the parallax header.
+ *  @param minHeight The min height for the parallax header.
+ *  @param shadow BOOL to show or hide the bottom inner shadow.
  */
-- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height;
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight andShadow:(BOOL)shadow;
 
 /**
  *  Adds a parallax with a custom view with a given initial height.
@@ -39,8 +58,33 @@
  */
 - (void)addParallaxWithView:(UIView *)view andHeight:(CGFloat)height;
 
+/**
+ *  Adds a parallax with a custom view with a given initial height and minimum height.
+ *
+ *  @param view   A UIView to display in the parallax header.
+ *  @param height The max height for the parallax header.
+ *  @param minHeight The min height for the parallax header.
+ */
+- (void)addParallaxWithView:(UIView *)view andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight;
+
+/**
+ *  Adds a parallax with a custom view with a given initial height and a bottom inner shadow.
+ *
+ *  @param view   A UIView to display in the parallax header.
+ *  @param height The max height for the parallax header.
+ *  @param shadow BOOL to show or hide the bottom inner shadow.
+ */
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andShadow:(BOOL)shadow;
 
+/**
+ *  Adds a parallax with a custom view with a given initial height and a bottom inner shadow.
+ *
+ *  @param view   A UIView to display in the parallax header.
+ *  @param height The max height for the parallax header.
+ *  @param minHeight The min height for the parallax header.
+ *  @param shadow BOOL to show or hide the bottom inner shadow.
+ */
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight andShadow:(BOOL)shadow;
 
 /**
  *  Getter for the parallaxView

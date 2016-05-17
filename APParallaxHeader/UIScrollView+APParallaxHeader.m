@@ -18,6 +18,7 @@ static char contentOffsetContext;
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, readwrite) CGFloat originalTopInset;
 @property (nonatomic) CGFloat parallaxHeight;
+@property (nonatomic) CGFloat parallaxMinHeight;
 
 @property(nonatomic, assign) BOOL isObserving;
 
@@ -34,7 +35,15 @@ static char UIScrollViewParallaxView;
     [self addParallaxWithImage:image andHeight:height andShadow:YES];
 }
 
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight {
+    [self addParallaxWithImage:image andHeight:height andShadow:YES];
+}
+
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow {
+    [self addParallaxWithImage:image andHeight:height andMinHeight:0 andShadow:shadow];
+}
+
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight andShadow:(BOOL)shadow {
     if(self.parallaxView) {
         if(self.parallaxView.customView) {
             [self.parallaxView.customView removeFromSuperview];
@@ -49,6 +58,7 @@ static char UIScrollViewParallaxView;
         
         parallaxView.scrollView = self;
         parallaxView.parallaxHeight = height;
+        parallaxView.parallaxMinHeight = minHeight;
         [self addSubview:parallaxView];
         
         parallaxView.originalTopInset = self.contentInset.top;
@@ -66,7 +76,15 @@ static char UIScrollViewParallaxView;
     [self addParallaxWithView:view andHeight:height andShadow:YES];
 }
 
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight {
+    [self addParallaxWithView:view andHeight:height andMinHeight:minHeight andShadow:YES];
+}
+
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andShadow:(BOOL)shadow {
+    [self addParallaxWithView:view andHeight:height andMinHeight:0  andShadow:shadow];
+}
+
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight andShadow:(BOOL)shadow {
     if(self.parallaxView) {
         [self.parallaxView.customView removeFromSuperview];
         [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
@@ -81,6 +99,7 @@ static char UIScrollViewParallaxView;
         
         parallaxView.scrollView = self;
         parallaxView.parallaxHeight = height;
+        parallaxView.parallaxMinHeight = minHeight;
         
         [self addSubview:parallaxView];
         
@@ -257,8 +276,6 @@ static char UIScrollViewParallaxView;
     }
 }
 
-#define MIN_HEIGHT 0
-
 - (void)setFrame:(CGRect)frame {
     if ([self.delegate respondsToSelector:@selector(parallaxView:willChangeFrame:)]) {
         [self.delegate parallaxView:self willChangeFrame:self.frame];
@@ -273,7 +290,7 @@ static char UIScrollViewParallaxView;
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
 	// We do not want to track when the parallax view is hidden
-    if (contentOffset.y > 0) {
+    if (contentOffset.y > 0 && self.parallaxMinHeight == 0) {
         [self setState:APParallaxTrackingInactive];
     } else {
         [self setState:APParallaxTrackingActive];
@@ -282,7 +299,7 @@ static char UIScrollViewParallaxView;
 	if(self.state == APParallaxTrackingActive) {
         // Resize/reposition the parallaxView based on the content offset
         CGFloat yOffset = contentOffset.y*-1;
-        CGFloat height = MAX(MIN_HEIGHT, yOffset);
+        CGFloat height = MAX(self.parallaxMinHeight, yOffset);
         [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), height)];
 
         // Correct the scroll indicator position
