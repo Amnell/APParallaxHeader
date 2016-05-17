@@ -9,6 +9,8 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+static char contentOffsetContext;
+
 @interface APParallaxView ()
 
 @property (nonatomic, readwrite) APParallaxTrackingState state;
@@ -16,12 +18,11 @@
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, readwrite) CGFloat originalTopInset;
 @property (nonatomic) CGFloat parallaxHeight;
+@property (nonatomic) CGFloat parallaxMinHeight;
 
 @property(nonatomic, assign) BOOL isObserving;
 
 @end
-
-
 
 #pragma mark - UIScrollView (APParallaxHeader)
 #import <objc/runtime.h>
@@ -34,21 +35,30 @@ static char UIScrollViewParallaxView;
     [self addParallaxWithImage:image andHeight:height andShadow:YES];
 }
 
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight {
+    [self addParallaxWithImage:image andHeight:height andShadow:YES];
+}
+
 - (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andShadow:(BOOL)shadow {
+    [self addParallaxWithImage:image andHeight:height andMinHeight:0 andShadow:shadow];
+}
+
+- (void)addParallaxWithImage:(UIImage *)image andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight andShadow:(BOOL)shadow {
     if(self.parallaxView) {
-        if(self.parallaxView.currentSubView) {
-            [self.parallaxView.currentSubView removeFromSuperview];
+        if(self.parallaxView.customView) {
+            [self.parallaxView.customView removeFromSuperview];
         }
         [self.parallaxView.imageView setImage:image];
     }
-    else
-    {
-        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width*2, height) andShadow:shadow];
+    else {
+        APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height) andShadow:shadow];
+        [parallaxView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         [parallaxView setClipsToBounds:YES];
         [parallaxView.imageView setImage:image];
         
         parallaxView.scrollView = self;
         parallaxView.parallaxHeight = height;
+        parallaxView.parallaxMinHeight = minHeight;
         [self addSubview:parallaxView];
         
         parallaxView.originalTopInset = self.contentInset.top;
@@ -66,23 +76,33 @@ static char UIScrollViewParallaxView;
     [self addParallaxWithView:view andHeight:height andShadow:YES];
 }
 
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight {
+    [self addParallaxWithView:view andHeight:height andMinHeight:minHeight andShadow:YES];
+}
+
 - (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andShadow:(BOOL)shadow {
+    [self addParallaxWithView:view andHeight:height andMinHeight:0  andShadow:shadow];
+}
+
+- (void)addParallaxWithView:(UIView*)view andHeight:(CGFloat)height andMinHeight:(CGFloat)minHeight andShadow:(BOOL)shadow {
     if(self.parallaxView) {
-        [self.parallaxView.currentSubView removeFromSuperview];
+        [self.parallaxView.customView removeFromSuperview];
         [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         [self.parallaxView setCustomView:view];
     }
     else
     {
         APParallaxView *parallaxView = [[APParallaxView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, height) andShadow:shadow];
+        [parallaxView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         [parallaxView setClipsToBounds:YES];
-        
         [parallaxView setCustomView:view];
         
         parallaxView.scrollView = self;
         parallaxView.parallaxHeight = height;
+        parallaxView.parallaxMinHeight = minHeight;
+        
         [self addSubview:parallaxView];
-
+        
         parallaxView.originalTopInset = self.contentInset.top;
         
         UIEdgeInsets newInset = self.contentInset;
@@ -110,14 +130,12 @@ static char UIScrollViewParallaxView;
     if(!showsParallax) {
         if (self.parallaxView.isObserving) {
             [self removeObserver:self.parallaxView forKeyPath:@"contentOffset"];
-            [self removeObserver:self.parallaxView forKeyPath:@"frame"];
             self.parallaxView.isObserving = NO;
         }
     }
     else {
         if (!self.parallaxView.isObserving) {
-            [self addObserver:self.parallaxView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
-            [self addObserver:self.parallaxView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+            [self addObserver:self.parallaxView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:&contentOffsetContext];
             self.parallaxView.isObserving = YES;
         }
     }
@@ -125,6 +143,10 @@ static char UIScrollViewParallaxView;
 
 - (BOOL)showsParallax {
     return !self.parallaxView.hidden;
+}
+
+- (void)didMoveToSuperview {
+    [super didMoveToSuperview];
 }
 
 @end
@@ -151,7 +173,7 @@ static char UIScrollViewParallaxView;
     
     //// Gradient Declarations
     NSArray* gradient3Colors = [NSArray arrayWithObjects:
-                                (id)[UIColor colorWithWhite:0 alpha:0.3].CGColor,
+                                (id)[UIColor colorWithWhite:0 alpha:0.2].CGColor,
                                 (id)[UIColor clearColor].CGColor, nil];
     CGFloat gradient3Locations[] = {0, 1};
     CGGradientRef gradient3 = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)gradient3Colors, gradient3Locations);
@@ -167,7 +189,6 @@ static char UIScrollViewParallaxView;
     //// Cleanup
     CGGradientRelease(gradient3);
     CGColorSpaceRelease(colorSpace);
-    
 }
 
 @end
@@ -221,16 +242,10 @@ static char UIScrollViewParallaxView;
             if (self.isObserving) {
                 //If enter this branch, it is the moment just before "APParallaxView's dealloc", so remove observer here
                 [scrollView removeObserver:self forKeyPath:@"contentOffset"];
-                [scrollView removeObserver:self forKeyPath:@"frame"];
                 self.isObserving = NO;
             }
         }
     }
-}
-
-- (void)addSubview:(UIView *)view {
-    [super addSubview:view];
-    self.currentSubView = view;
 }
 
 - (void)setCustomView:(UIView *)customView
@@ -241,50 +256,59 @@ static char UIScrollViewParallaxView;
     
     _customView = customView;
     
-    [self addSubview:customView];
-    [customView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[customView]|" options:0 metrics:nil views:@{@"customView" : customView}]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[customView]|" options:0 metrics:nil views:@{@"customView" : customView}]];
-}
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
     if (self.shadowView) {
-        [self bringSubviewToFront:self.shadowView];
+        [self insertSubview:customView belowSubview:self.shadowView];
     }
+    else {
+        [self addSubview:customView];
+    }
+    
+    [self.customView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[customView]|" options:0 metrics:nil views:@{@"customView" : self.customView}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[customView]|" options:0 metrics:nil views:@{@"customView" : self.customView}]];
 }
 
 #pragma mark - Observing
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if([keyPath isEqualToString:@"contentOffset"]) {
+    if(context == &contentOffsetContext) {
         [self scrollViewDidScroll:[[change valueForKey:NSKeyValueChangeNewKey] CGPointValue]];
     }
-    else if([keyPath isEqualToString:@"frame"]) {
-        [self layoutSubviews];
+}
+
+- (void)setFrame:(CGRect)frame {
+    if ([self.delegate respondsToSelector:@selector(parallaxView:willChangeFrame:)]) {
+        [self.delegate parallaxView:self willChangeFrame:self.frame];
+    }
+    
+    [super setFrame:frame];
+    
+    if ([self.delegate respondsToSelector:@selector(parallaxView:didChangeFrame:)]) {
+        [self.delegate parallaxView:self didChangeFrame:self.frame];
     }
 }
 
 - (void)scrollViewDidScroll:(CGPoint)contentOffset {
-    // We do not want to track when the parallax view is hidden
-    if (contentOffset.y > 0) {
+	// We do not want to track when the parallax view is hidden
+    if (contentOffset.y > 0 && self.parallaxMinHeight == 0) {
         [self setState:APParallaxTrackingInactive];
     } else {
         [self setState:APParallaxTrackingActive];
     }
-    
-    if(self.state == APParallaxTrackingActive) {
+
+	if(self.state == APParallaxTrackingActive) {
+        // Resize/reposition the parallaxView based on the content offset
         CGFloat yOffset = contentOffset.y*-1;
-        if ([self.delegate respondsToSelector:@selector(parallaxView:willChangeFrame:)]) {
-            [self.delegate parallaxView:self willChangeFrame:self.frame];
+        CGFloat height = MAX(self.parallaxMinHeight, yOffset);
+        [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), height)];
+
+        // Correct the scroll indicator position
+        // Without this the scroll indicator will be displayed on top of the parallax view
+        if (self.scrollView.contentOffset.y < -self.parallaxHeight) {
+            [self.scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.scrollView.contentInset.top+(abs(self.scrollView.contentOffset.y)-self.parallaxHeight), 0, 0, 0)];
         }
-        
-        [self setFrame:CGRectMake(0, contentOffset.y, CGRectGetWidth(self.frame), yOffset)];
-        
-        if ([self.delegate respondsToSelector:@selector(parallaxView:didChangeFrame:)]) {
-            [self.delegate parallaxView:self didChangeFrame:self.frame];
+        else {
+            [self.scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.scrollView.contentInset.top, 0, 0, 0)];
         }
     }
 }
