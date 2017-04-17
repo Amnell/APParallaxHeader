@@ -53,7 +53,7 @@ UIView *customView = [[UIView alloc] init];
 
 APParallaxViewDelegate will notify the delegate about resizing of the parallax view.
 
-####Methods:####
+#### Methods: ####
 
 * ```- (void)parallaxView:(APParallaxView *)view willChangeFrame:(CGRect)frame```
 * ```- (void)parallaxView:(APParallaxView *)view didChangeFrame:(CGRect)frame```
