@@ -190,7 +190,7 @@ static char UIScrollViewParallaxView;
         [self setBackgroundColor:[UIColor clearColor]];
         
         // default styling values
-        [self setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
+        [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         [self setState:APParallaxTrackingActive];
         
         self.imageView = [[UIImageView alloc] init];
